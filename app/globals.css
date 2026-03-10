@@ -1,0 +1,175 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import "tailwindcss";
+
+:root {
+  --bg:          #0d0f1a;
+  --bg-surface:  #1a2233;
+  --bg-deep:     #090b12;
+  --border-hi:   #2e3f52;
+  --border-lo:   #060710;
+  --text:        #c8cfd8;
+  --text-dim:    #526070;
+  --title-bar:   #251838;
+  --title-bar-b: #1a2233;
+
+  --yes-color:   #7aaa7a;
+  --no-color:    #6a8aaa;
+  --misty-color: #9a8aaa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  /* 2×2 checkerboard dither over the base bg */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='2' height='2' x='0' y='0' fill='%230f1120'/%3E%3Crect width='2' height='2' x='2' y='2' fill='%230f1120'/%3E%3C/svg%3E");
+  font-family: 'Press Start 2P', monospace;
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  image-rendering: pixelated;
+}
+
+/* ── Sierra-style window chrome ── */
+.window {
+  background: var(--bg-surface);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  box-shadow: 3px 3px 0 var(--border-lo);
+}
+
+/* Sunken inset — looks like looking through a dark pane */
+.window-inset {
+  background: var(--bg-deep);
+  border: 2px solid;
+  border-color: var(--border-lo) var(--border-hi) var(--border-hi) var(--border-lo);
+}
+
+/* Title bar — dithered between two dark purples */
+.title-bar {
+  background-color: var(--title-bar);
+  background-image:
+    linear-gradient(45deg, var(--title-bar-b) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--title-bar-b) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--title-bar-b) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--title-bar-b) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+  color: var(--text);
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.title-bar-text {
+  font-size: 8px;
+  letter-spacing: 0.05em;
+}
+
+/* ── Buttons ── */
+.btn {
+  background: var(--bg-surface);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+  padding: 5px 14px;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 8px;
+  cursor: pointer;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: none;
+}
+
+.btn:active {
+  border-color: var(--border-lo) var(--border-hi) var(--border-hi) var(--border-lo);
+  padding: 6px 13px 4px 15px;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn-yes {
+  background: #1b2e1b;
+  color: var(--yes-color);
+}
+
+.btn-no {
+  background: #1a2232;
+  color: var(--no-color);
+}
+
+/* ── Status colors ── */
+.status-YES {
+  color: var(--yes-color);
+  text-shadow: 2px 2px 0 #1a3a1a;
+}
+
+.status-NO {
+  color: var(--no-color);
+  text-shadow: 2px 2px 0 #1a2a3a;
+}
+
+.status-MISTY {
+  color: var(--misty-color);
+  text-shadow: 2px 2px 0 #2a1a3a;
+  animation: misty-flicker 5s ease-in-out infinite;
+}
+
+@keyframes misty-flicker {
+  0%,  100% { opacity: 1;    }
+  20%        { opacity: 0.75; }
+  40%        { opacity: 0.95; }
+  65%        { opacity: 0.6;  }
+  80%        { opacity: 0.9;  }
+}
+
+.blink {
+  animation: blink 1.2s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── Dithered shadow panel (checkerboard) ── */
+.dither-shadow {
+  background-color: var(--bg-surface);
+  background-image:
+    linear-gradient(45deg, var(--bg-deep) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--bg-deep) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--bg-deep) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--bg-deep) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 12px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface);
+  border: 2px solid;
+  border-color: var(--border-hi) var(--border-lo) var(--border-lo) var(--border-hi);
+}
+
+/* ── Marquee ── */
+.marquee-wrap {
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-inner {
+  display: inline-block;
+  animation: marquee 28s linear infinite;
+}
+@keyframes marquee {
+  0%   { transform: translateX(100vw); }
+  100% { transform: translateX(-100%); }
+}
