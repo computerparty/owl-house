@@ -15,8 +15,10 @@ export async function POST(req: Request) {
   }
 
   // Server-side random result — client can't predict or influence this
-  const result: 'YES' | 'NO' = Math.random() < 0.5 ? 'YES' : 'NO'
-  const correct = guess === result
+  // ~20% chance of MISTY fog — doesn't count for or against
+  const roll = Math.random()
+  const result: 'YES' | 'NO' | 'MISTY' = roll < 0.20 ? 'MISTY' : roll < 0.60 ? 'YES' : 'NO'
+  const correct = result === 'MISTY' ? null : guess === result
 
   const supabase = createServiceClient()
   const today = new Date().toISOString().split('T')[0]
@@ -29,7 +31,8 @@ export async function POST(req: Request) {
     .eq('date', today)
     .single()
 
-  const newScore  = (existing?.score  ?? 0) + (correct ? 1 : 0)
+  // MISTY: no score change, still increment rounds
+  const newScore  = (existing?.score  ?? 0) + (correct === true ? 1 : 0)
   const newRounds = (existing?.rounds ?? 0) + 1
 
   await supabase.from('scores').upsert(
