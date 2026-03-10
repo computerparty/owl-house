@@ -79,6 +79,16 @@ export default function OwlGame() {
     return () => { supabase.removeChannel(channel) }
   }, [fetchLeaderboard])
 
+  const handleLogout = () => {
+    localStorage.removeItem('owl_player')
+    setPlayerName(null)
+    setNameInput('')
+    setScore(0)
+    setRounds(0)
+    setResult(null)
+    setPhase('idle')
+  }
+
   const handleNameSubmit = () => {
     const trimmed = nameInput.trim().slice(0, 16)
     if (!trimmed) return
@@ -129,7 +139,7 @@ export default function OwlGame() {
         className="min-h-screen flex flex-col items-center justify-center p-4"
         style={{ color: 'var(--text)' }}
       >
-        <div className="window w-full max-w-xs">
+        <div className="window w-full max-w-sm">
           <div className="title-bar">
             <span className="title-bar-text">WHO IS WATCHING?</span>
           </div>
@@ -138,7 +148,7 @@ export default function OwlGame() {
               className="window-inset mb-6"
               style={{ padding: 0, overflow: 'hidden', lineHeight: 0 }}
             >
-              <OwlScene status={null} flash={false} />
+              <OwlScene status="YES" flash={false} />
             </div>
             <div className="text-[8px] mb-4" style={{ color: 'var(--text-dim)' }}>
               ENTER YOUR NAME TO BEGIN
@@ -225,12 +235,14 @@ export default function OwlGame() {
                     <div className={`text-[10px] mb-1 status-${result}`}>
                       {RESULT_LABEL[result]}
                     </div>
-                    <div
-                      className="text-[9px] mb-1"
-                      style={{ color: correct ? 'var(--yes-color)' : 'var(--no-color)' }}
-                    >
-                      {correct ? '[OK] CORRECT' : '[!!] WRONG'}
-                    </div>
+                    {result !== 'MISTY' && (
+                      <div
+                        className="text-[9px] mb-1"
+                        style={{ color: correct ? 'var(--yes-color)' : 'var(--no-color)' }}
+                      >
+                        {correct ? '[OK] CORRECT' : '[!!] WRONG'}
+                      </div>
+                    )}
                     <div className="text-[7px] italic" style={{ color: 'var(--text-dim)' }}>
                       {RESULT_FLAVOR[result]}
                     </div>
@@ -264,7 +276,7 @@ export default function OwlGame() {
 
               {/* Player stats */}
               <div className="flex gap-2">
-                <div className="window-inset flex-1 p-2 text-center">
+                <div className="window-inset flex-1 p-2 text-center" style={{ position: 'relative' }}>
                   <div className="text-[7px] mb-1" style={{ color: 'var(--text-dim)' }}>PLAYER</div>
                   <div
                     className="text-[8px]"
@@ -272,6 +284,13 @@ export default function OwlGame() {
                   >
                     {playerName}
                   </div>
+                  <button
+                    onClick={handleLogout}
+                    className="text-[6px] mt-1 block w-full"
+                    style={{ color: 'var(--text-dim)', opacity: 0.5, background: 'none', border: 'none', cursor: 'pointer', fontFamily: "'Press Start 2P', monospace", letterSpacing: 0 }}
+                  >
+                    [change]
+                  </button>
                 </div>
                 <div className="window-inset flex-1 p-2 text-center">
                   <div className="text-[7px] mb-1" style={{ color: 'var(--text-dim)' }}>SCORE</div>
